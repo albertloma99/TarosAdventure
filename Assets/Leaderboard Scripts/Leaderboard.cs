@@ -24,6 +24,11 @@ namespace Leaderboard_Scripts
             StartCoroutine(LeaderboardNetwork.GetText(this._onGetText));
         }
 
+        private void OnEnable()
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
         private void Call()
         {
             for (int i = 0; i < this.root.transform.childCount; i++)
@@ -31,16 +36,31 @@ namespace Leaderboard_Scripts
                 Destroy(this.root.transform.GetChild(i).gameObject);
             }
 
-            LeaderboardNetwork._models.ForEach(m =>
+            Destroy(FindObjectOfType<PlayerMovement>());
+            Destroy(FindObjectOfType<Orbit>());
+
+            for (int i = 0; i < LeaderboardNetwork._models.Count; i++)
             {
+                var m = LeaderboardNetwork._models[1];
                 var newText = new GameObject("Player", typeof(RectTransform));
+                var r = newText.GetComponent<RectTransform>();
+                var s = r.sizeDelta;
+                s.y = 50;
+                r.sizeDelta = s;
                 Text text = newText.AddComponent<Text>();
-                text.text = $"{m.player} - {m.score}";
+                if (LeaderboardNetwork.lastModel != null)
+                    if (m.score.Equals(LeaderboardNetwork.lastModel.score))
+                        text.color = Color.yellow;
+
+
+                var ts = TimeSpan.FromTicks(long.Parse(m.score));
+                text.text = $"{i} - {m.player} - {ts}";
                 text.font = this._font;
                 text.alignment = TextAnchor.MiddleCenter;
                 text.resizeTextForBestFit = true;
                 newText.transform.SetParent(this.root.transform);
-            });
+            }
+
             var l = this.canvas.sizeDelta;
             l.y = LeaderboardNetwork._models.Count * this.size;
             this.canvas.sizeDelta = l;

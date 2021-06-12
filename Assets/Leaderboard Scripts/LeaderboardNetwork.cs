@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -13,6 +14,7 @@ namespace Leaderboard_Scripts
     public static class LeaderboardNetwork
     {
         public static List<ScoreModel> _models { get; private set; }
+        public static ScoreModel lastModel;
 
         static LeaderboardNetwork()
         {
@@ -21,6 +23,7 @@ namespace Leaderboard_Scripts
 
         public static IEnumerator Upload(string playerName, string ticks)
         {
+            lastModel = new ScoreModel {player = playerName, score = ticks};
             UnityWebRequest www = UnityWebRequest.Get($"http://may66.ddns.net:6060/add/{playerName}/{ticks}");
             yield return www.SendWebRequest();
 
@@ -51,7 +54,7 @@ namespace Leaderboard_Scripts
                 var a = JsonUtility.FromJson<RootScoreModel>("{\"scores\":" + www.downloadHandler.text + "}");
                 _models.Clear();
                 _models.AddRange(a.scores);
-                IOrderedEnumerable<ScoreModel> orderedEnumerable = _models.OrderByDescending(model => long.Parse(model.score));
+                IOrderedEnumerable<ScoreModel> orderedEnumerable = _models.OrderBy(model => long.Parse(model.score));
                 _models = orderedEnumerable.ToList();
                 onEnd.Invoke();
             }

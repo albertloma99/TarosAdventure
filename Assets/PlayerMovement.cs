@@ -44,4 +44,9 @@ public class PlayerMovement : MonoBehaviour
     {
         isGrounded = false;
     }
+
+    public void Destroy()
+    {
+        Destroy(this);
+    }
 }
