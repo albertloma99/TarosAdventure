@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Leaderboard_Scripts
 {
@@ -20,6 +21,7 @@ namespace Leaderboard_Scripts
             this.activated = true;
             var ts = DateTime.Now - _time;
             StartCoroutine(LeaderboardNetwork.Upload("Player", ts.Ticks.ToString()));
+            SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
         }
     }
 }
