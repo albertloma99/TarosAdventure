@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Kitchen Collection 2/Scene/Demo.unity
+    guid: 568ebbe10f6b70b46a1c10635f57b112
+  - enabled: 1
+    path: Assets/Kitchen Collection 2/Scene/LDD2.unity
+    guid: b936036555010924f8bb53b268599c24
   m_configObjects: {}
