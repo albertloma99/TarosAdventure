@@ -53,18 +53,17 @@ namespace Leaderboard_Scripts
                 if (LeaderboardNetwork.lastModel != null)
                     if (m.score.Equals(LeaderboardNetwork.lastModel.score))
                         text.color = Color.yellow;
-
-
                 var ts = TimeSpan.FromTicks(long.Parse(m.score));
                 text.text = $"{i} - {m.player} - {ts}";
                 text.font = this._font;
+                text.fontSize = 30;
                 text.alignment = TextAnchor.MiddleCenter;
-                text.resizeTextForBestFit = true;
+                text.resizeTextForBestFit = false;
                 newText.transform.SetParent(this.root.transform);
             }
 
             var l = this.canvas.sizeDelta;
-            l.y = LeaderboardNetwork._models.Count * this.size;
+            l.y = LeaderboardNetwork._models.Count * this.size + 400;
             this.canvas.sizeDelta = l;
             // LeaderboardNetwork._models;
         }
