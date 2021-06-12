@@ -11,12 +11,13 @@ namespace Leaderboard_Scripts
     public class Leaderboard : MonoBehaviour
     {
         // Start is called before the first frame update
-        private DateTime _time;
         [SerializeField] private UnityEvent _onGetText;
         [SerializeField] private GameObject root;
+        [SerializeField] private GameObject inputText;
         [SerializeField] private Font _font;
         [SerializeField] private RectTransform canvas;
         [SerializeField] private float size = 50;
+        [SerializeField] private InputField player;
 
         void Start()
         {
@@ -65,6 +66,20 @@ namespace Leaderboard_Scripts
             l.y = LeaderboardNetwork._models.Count * this.size;
             this.canvas.sizeDelta = l;
             // LeaderboardNetwork._models;
+        }
+
+        public void SetInputTime()
+        {
+            this.inputText.SetActive(true);
+            this.root.SetActive(false);
+        }
+
+        public void Upload()
+        {
+            this.inputText.SetActive(false);
+            this.root.SetActive(true);
+            StartCoroutine(LeaderboardNetwork.Upload(this.player.text, Timer.lastTimeSpan.Ticks.ToString()));
+            StartCoroutine(LeaderboardNetwork.GetText(this._onGetText));
         }
 
         // private void FixedUpdate()
