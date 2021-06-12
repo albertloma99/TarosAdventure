@@ -12,21 +12,21 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce;
     private CameraMatrixBaseChanger cameraMatrixBaseChanger;
     public bool isGrounded;
+
     private void Start()
     {
         cameraMatrixBaseChanger = GetComponent<CameraMatrixBaseChanger>();
-        
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if(isGrounded)
+        if (isGrounded)
             rb.AddForce(cameraMatrixBaseChanger.GetMovement() * force);
 
-        if (Input.GetKeyDown(KeyCode.Space)) //Yo desisto :(
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(isGrounded)
-                rb.AddForce(Vector3.up*jumpForce , ForceMode.Impulse);
+            if (isGrounded)
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
