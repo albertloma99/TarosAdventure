@@ -6,6 +6,7 @@ namespace Leaderboard_Scripts
 {
     public class LeaderboardTrigger : MonoBehaviour
     {
+        public GameObject leaderboard;
         private DateTime _time;
         private bool activated = false;
 
@@ -21,6 +22,8 @@ namespace Leaderboard_Scripts
             this.activated = true;
             var ts = DateTime.Now - _time;
             StartCoroutine(LeaderboardNetwork.Upload("Player", ts.Ticks.ToString()));
+            leaderboard.SetActive(true);
+            Cursor.lockState = CursorLockMode.Confined;
         }
     }
 }
