@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -11,17 +12,23 @@ namespace Leaderboard_Scripts
     public class Leaderboard : MonoBehaviour
     {
         // Start is called before the first frame update
-        private DateTime _time;
         [SerializeField] private UnityEvent _onGetText;
         [SerializeField] private GameObject root;
+        [SerializeField] private GameObject inputText;
         [SerializeField] private Font _font;
         [SerializeField] private RectTransform canvas;
         [SerializeField] private float size = 50;
+        [SerializeField] private TMP_InputField player;
 
         void Start()
         {
             this._onGetText.AddListener(Call);
             StartCoroutine(LeaderboardNetwork.GetText(this._onGetText));
+        }
+
+        private void OnEnable()
+        {
+            Cursor.lockState = CursorLockMode.None;
         }
 
         private void Call()
@@ -31,20 +38,55 @@ namespace Leaderboard_Scripts
                 Destroy(this.root.transform.GetChild(i).gameObject);
             }
 
-            LeaderboardNetwork._models.ForEach(m =>
+            Destroy(FindObjectOfType<PlayerMovement>());
+            Destroy(FindObjectOfType<Orbit>());
+
+            for (int i = 0; i < LeaderboardNetwork._models.Count; i++)
             {
+                var m = LeaderboardNetwork._models[i];
                 var newText = new GameObject("Player", typeof(RectTransform));
+                var r = newText.GetComponent<RectTransform>();
+                var s = r.sizeDelta;
+                s.y = 50;
+                r.sizeDelta = s;
                 Text text = newText.AddComponent<Text>();
-                text.text = $"{m.player} - {m.score}";
+                if (LeaderboardNetwork.lastModel != null)
+                    if (m.score.Equals(LeaderboardNetwork.lastModel.score))
+                        text.color = Color.yellow;
+                var ts = TimeSpan.FromTicks(long.Parse(m.score));
+                text.text = $"{i} - {m.player} - {ts}";
                 text.font = this._font;
+                text.fontSize = 30;
                 text.alignment = TextAnchor.MiddleCenter;
-                text.resizeTextForBestFit = true;
+                text.resizeTextForBestFit = false;
                 newText.transform.SetParent(this.root.transform);
-            });
+            }
+
             var l = this.canvas.sizeDelta;
-            l.y = LeaderboardNetwork._models.Count * this.size;
+            l.y = LeaderboardNetwork._models.Count * this.size + 400;
             this.canvas.sizeDelta = l;
             // LeaderboardNetwork._models;
+        }
+
+        public void SetInputTime()
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            this.inputText.SetActive(true);
+            this.root.SetActive(false);
+        }
+
+        public void Upload()
+        {
+            this.inputText.SetActive(false);
+            this.root.SetActive(true);
+            StartCoroutine(LeaderboardNetwork.Upload(this.player.text, Timer.lastTimeSpan.Ticks.ToString()));
+            StartCoroutine(DelayGetText());
+        }
+
+        public IEnumerator DelayGetText()
+        {
+            yield return new WaitForSecondsRealtime(0.2f);
+            StartCoroutine(LeaderboardNetwork.GetText(this._onGetText));
         }
 
         // private void FixedUpdate()
