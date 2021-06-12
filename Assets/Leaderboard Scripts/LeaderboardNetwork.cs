@@ -47,7 +47,6 @@ namespace Leaderboard_Scripts
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log(www.error);
             }
             else
             {

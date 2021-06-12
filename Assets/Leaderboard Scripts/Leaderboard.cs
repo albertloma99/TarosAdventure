@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -17,7 +18,7 @@ namespace Leaderboard_Scripts
         [SerializeField] private Font _font;
         [SerializeField] private RectTransform canvas;
         [SerializeField] private float size = 50;
-        [SerializeField] private InputField player;
+        [SerializeField] private TMP_InputField player;
 
         void Start()
         {
@@ -42,7 +43,7 @@ namespace Leaderboard_Scripts
 
             for (int i = 0; i < LeaderboardNetwork._models.Count; i++)
             {
-                var m = LeaderboardNetwork._models[1];
+                var m = LeaderboardNetwork._models[i];
                 var newText = new GameObject("Player", typeof(RectTransform));
                 var r = newText.GetComponent<RectTransform>();
                 var s = r.sizeDelta;
@@ -70,6 +71,7 @@ namespace Leaderboard_Scripts
 
         public void SetInputTime()
         {
+            Cursor.lockState = CursorLockMode.Confined;
             this.inputText.SetActive(true);
             this.root.SetActive(false);
         }
@@ -79,6 +81,12 @@ namespace Leaderboard_Scripts
             this.inputText.SetActive(false);
             this.root.SetActive(true);
             StartCoroutine(LeaderboardNetwork.Upload(this.player.text, Timer.lastTimeSpan.Ticks.ToString()));
+            StartCoroutine(DelayGetText());
+        }
+
+        public IEnumerator DelayGetText()
+        {
+            yield return new WaitForSecondsRealtime(0.2f);
             StartCoroutine(LeaderboardNetwork.GetText(this._onGetText));
         }
 
