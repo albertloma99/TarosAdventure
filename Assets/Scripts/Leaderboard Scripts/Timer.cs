@@ -1,0 +1,23 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+
+public class Timer : MonoBehaviour
+{
+    // Start is called before the first frame update
+    [SerializeField] private TextMeshProUGUI text;
+    private DateTime _time;
+
+    void Start()
+    {
+        this._time = DateTime.Now;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        this.text.text = (DateTime.Now - this._time).ToString();
+    }
+}

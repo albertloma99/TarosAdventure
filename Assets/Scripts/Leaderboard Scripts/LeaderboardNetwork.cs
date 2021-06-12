@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -47,7 +49,10 @@ namespace Leaderboard_Scripts
             else
             {
                 var a = JsonUtility.FromJson<RootScoreModel>("{\"scores\":" + www.downloadHandler.text + "}");
+                _models.Clear();
                 _models.AddRange(a.scores);
+                IOrderedEnumerable<ScoreModel> orderedEnumerable = _models.OrderByDescending(model => long.Parse(model.score));
+                _models = orderedEnumerable.ToList();
                 onEnd.Invoke();
             }
         }
